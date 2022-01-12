@@ -229,6 +229,15 @@
 		}
 		return result;
 	};
+	
+	// These are slot arrays such that they have a name_size and name_1-10
+	var globalSkipIfStartsWith = [
+		'radar_','weapon_','atmofueltank_','spacefueltank_','rocketfueltank_','dbHud_'
+	]
+	
+	var globalsToSkip = [
+		'system', 'core', 'library','antigrav','warpdrive','gyro','telemeter','vBooster','hover','door','switch','forcefield','shield','unit', 'type', 'math', 'require', 'getmetatable', 'setmetatable', 'table', 'tostring', 'pairs', 'ipairs', 'assert','error','rawget','next','string','coroutine','constants','_G','VERSION_NUMBER', 'Navigator', 'json','utils','vec3','script','axisCommandType','axisCommandId','getRoll','pid','_autoconf','collectgarbage','tonumber'
+	]
 
 	var formatExpression = function(expression, options) {
 
@@ -245,7 +254,20 @@
 		var expressionType = expression.type;
 
 		if (expressionType == 'Identifier') {
-
+			
+			// If it's not in globalsToSkip or globalSkipIfStartsWith, pretend it's local
+			expression.isLocal = true;
+			each(globalsToSkip, function(skipName) {
+				if (expression.name == skipName) {
+					expression.isLocal = false;
+				}
+			});
+			each(globalSkipIfStartsWith, function(skipName) {
+				if (expression.name.startsWith(skipName)) {
+					expression.isLocal = false;
+				}
+			});
+			
 			result = expression.isLocal && !options.preserveIdentifiers
 				? generateIdentifier(expression.name)
 				: expression.name;
@@ -636,9 +658,22 @@
 		// Make sure global variable names aren't renamed
 		if (ast.globals) {
 			each(ast.globals, function(object) {
-				var name = object.name;
-				identifierMap[name] = name;
-				identifiersInUse.push(name);
+				skip = true;
+				each(globalsToSkip, function(skipName) {
+					if (object.name == skipName) {
+						skip = false;
+					}
+				});
+				each(globalSkipIfStartsWith, function(skipName) {
+					if (object.name.startsWith(skipName)) {
+						skip = false;
+					}
+				});
+				if (!skip) {
+					var name = object.name;
+					identifierMap[name] = name;
+					identifiersInUse.push(name);
+				}
 			});
 		} else {
 			throw Error('Missing required AST property: `globals`');
