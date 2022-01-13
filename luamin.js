@@ -236,7 +236,7 @@
 	]
 	
 	var globalsToSkip = [
-		'package','system', 'core', 'library', 'load','antigrav','warpdrive','gyro','telemeter','vBooster','hover','door','switch','forcefield','shield','unit', 'type', 'math', 'require', 'getmetatable', 'setmetatable', 'table', 'tostring', 'pairs', 'ipairs', 'assert','error','rawget','next','string','coroutine','constants','_G','VERSION_NUMBER', 'Navigator', 'json','utils','vec3','script','axisCommandType','axisCommandId','getRoll','pid','_autoconf','collectgarbage','tonumber'
+		'xpcall','package','system', 'core', 'library', 'load','antigrav','warpdrive','gyro','telemeter','vBooster','hover','door','switch','forcefield','shield','unit', 'type', 'math', 'require', 'getmetatable', 'setmetatable', 'table', 'tostring', 'pairs', 'ipairs', 'assert','error','rawget','next','string','coroutine','constants','_G','VERSION_NUMBER', 'Navigator', 'json','utils','vec3','script','axisCommandType','axisCommandId','getRoll','pid','_autoconf','collectgarbage','tonumber'
 	]
 
 	var formatExpression = function(expression, options) {
